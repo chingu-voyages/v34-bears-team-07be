@@ -6,11 +6,14 @@ const mongoose = require("mongoose");
 dotenv.config();
 app.use(express.json());
 
-// mongoose.connect(process.env.DATABASE_URL, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useFindAndModify: false,
-// });
+mongoose
+  .connect(process.env.DATABASE_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Successfully connected to MongoDB Atlas");
+  });
 
 app.get("/", (req, res) => {
   res.send("Hello World");
