@@ -10,14 +10,14 @@ router.get("/", (req, res) => {
 
 router.post("/", async (req, res) => {
     const { username, password, email } = req.body;
-    // const hashedPassword = await bcrypt.hash(password, saltRounds);
-    // const user = new User({ username, hashedPassword, email });
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
     const user = new User({
         username,
-        password,
+        password: hashedPassword,
         email,
     });
-    // console.log("user", user);
+
     try {
         const newUser = await user.save();
         res.status(201).json({ message: "User created." });
