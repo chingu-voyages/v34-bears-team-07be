@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const UserSchema = new Schema(
+const ItemSchema = new Schema(
   {
     itemName: String,
     purchaseDate: { type: Date, default: Date.now },
@@ -12,4 +12,4 @@ const UserSchema = new Schema(
   { timeStamps: true }
 );
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("Item", ItemSchema);
