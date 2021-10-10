@@ -29,10 +29,34 @@ router.post("/", async (req, res) => {
 
 // Get an item by id
 router.get("/:itemId", async (req, res) => {
+  // Try to find the item that the user is specifying
   try {
     const item = await Item.findById(req.params.itemId);
     res.status(200).json(item);
   } catch (err) {
+    res.status(404).json("Item not found");
+  }
+});
+
+// Update an item by id
+router.patch("/:itemId", async (req, res) => {
+  // Try to find the item that the user is specifying
+  try {
+    await Item.findById(req.params.itemId);
+    // Try updating the item
+    try {
+      const updatedItem = await Item.findByIdAndUpdate(
+        req.params.itemId,
+        {
+          $set: req.body,
+        },
+        { new: true }
+      );
+      res.status(200).json(updatedItem);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } catch {
     res.status(404).json("Item not found");
   }
 });
