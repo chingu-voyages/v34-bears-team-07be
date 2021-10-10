@@ -21,8 +21,8 @@ mongoose
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
-app.use("/users", usersRouter);
-app.use("/items", itemsRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/items", itemsRouter);
 
 const PORT = process.env.PORT || 3000;
 
