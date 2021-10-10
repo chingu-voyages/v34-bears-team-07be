@@ -2,29 +2,30 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-
 const usersRouter = require("./routes/users");
+const itemsRouter = require("./routes/itemRoutes");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/users", usersRouter);
 
 mongoose
-    .connect(process.env.DATABASE_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
-    .then(() => {
-        console.log("Successfully connected to MongoDB Atlas");
-    });
+  .connect(process.env.DATABASE_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Successfully connected to MongoDB Atlas");
+  });
 
 app.get("/", (req, res) => {
-    res.send("Hello World");
+  res.send("Hello World");
 });
+app.use("/users", usersRouter);
+app.use("/items", itemsRouter);
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`Backend is running on port ${PORT}`);
+  console.log(`Backend is running on port ${PORT}`);
 });
