@@ -27,4 +27,14 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Get an item by id
+router.get("/:itemId", async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.itemId);
+    res.status(200).json(item);
+  } catch (err) {
+    res.status(404).json("Item not found");
+  }
+});
+
 module.exports = router;
