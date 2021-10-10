@@ -61,4 +61,19 @@ router.patch("/:itemId", async (req, res) => {
   }
 });
 
+// Delete an item by id
+router.delete("/:itemId", async (req, res) => {
+  try {
+    await Item.findById(req.params.itemId);
+    try {
+      await Item.findByIdAndDelete(req.params.itemId);
+      res.status(200).json("Product deleted");
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } catch {
+    res.status(404).json("Item not found");
+  }
+});
+
 module.exports = router;
