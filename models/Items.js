@@ -3,11 +3,11 @@ const { Schema } = mongoose;
 
 const ItemSchema = new Schema(
   {
-    itemName: String,
-    purchaseDate: { type: Date, default: Date.now },
+    itemName: { type: String, default: "" },
+    purchaseDate: { type: Date, default: new Date() },
     expirationDate: { type: Date },
-    category: String,
-    pictureLink: String,
+    category: { type: String, default: "" },
+    pictureLink: { type: String, default: "" },
   },
   { timeStamps: true }
 );
