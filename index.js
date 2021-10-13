@@ -11,8 +11,10 @@ const { NotFoundError } = require("./expressError");
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(authenticateJWT);
 
+mongoose.set("runValidators", true);
 mongoose
     .connect(process.env.DATABASE_URL, {
         useNewUrlParser: true,

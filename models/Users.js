@@ -44,22 +44,6 @@ UserSchema.statics.authenticate = async function (email, password) {
     throw new UnauthorizedError("Invalid username/password");
 };
 
-UserSchema.statics.findAll = async function () {
-    return await this.find();
-};
-
-UserSchema.statics.findById = async function (id) {
-    let user = await this.findOne({ _id: id });
-    if (!user) throw new NotFoundError("User not found!");
-    return user;
-};
-
-UserSchema.statics.deleteUser = async function (id) {
-    let user = await this.findById(id);
-    user.remove();
-    return { message: "User deleted." };
-};
-
 UserSchema.path("email").validate(async (value) => {
     const emailCount = await mongoose.models.User.countDocuments({
         email: value,
