@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const { NotFoundError, UnauthorizedError } = require("../expressError");
-const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema(
     {
