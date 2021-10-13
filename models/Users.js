@@ -32,18 +32,6 @@ const UserSchema = new Schema(
     { timeStamps: true }
 );
 
-UserSchema.statics.authenticate = async function (email, password) {
-    const user = await this.findOne({ email: email });
-    if (user) {
-        const isValid = await bcrypt.compare(password, user.password);
-        if (isValid) {
-            delete user.password;
-            return user;
-        }
-    }
-    throw new UnauthorizedError("Invalid username/password");
-};
-
 UserSchema.path("email").validate(async (value) => {
     const emailCount = await mongoose.models.User.countDocuments({
         email: value,
