@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const User = require("./models/Users");
+const User = require("./../models/Users");
 const dontenv = require("dotenv");
 require("dotenv").config();
 
@@ -25,16 +25,38 @@ const seedUsers = [
     email: "test1@test.com",
     cart: [],
     // Person has Orange Juice and Milk
-    pantry: ["61661ee07aca7fab656fe6c3", "61661ee07aca7fab656fe6c4"],
+    pantry: [
+      {
+        itemId: "61661ee07aca7fab656fe6c3",
+        quantity: 1,
+        inFreezer: false,
+      },
+      {
+        itemId: "61661ee07aca7fab656fe6c4",
+        quantity: 1,
+        inFreezer: false,
+      },
+    ],
   },
   {
     username: "Test2",
     password: "password",
     email: "test2@test.com",
     // Person wants to buy chicken
-    cart: ["61661ee07aca7fab656fe6c5"],
+    cart: [
+      {
+        itemId: "61661ee07aca7fab656fe6c5",
+        quantity: 1,
+      },
+    ],
     // Person has beef
-    pantry: ["61661ee07aca7fab656fe6c6"],
+    pantry: [
+      {
+        itemId: "61661ee07aca7fab656fe6c6",
+        quantity: 1,
+        inFreezer: true,
+      },
+    ],
   },
   {
     username: "Test3",
@@ -48,7 +70,12 @@ const seedUsers = [
     password: "password",
     email: "test4@test.com",
     // Person wants to buy coffee
-    cart: ["61661ee07aca7fab656fe6c9"],
+    cart: [
+      {
+        itemId: "61661ee07aca7fab656fe6c9",
+        quantity: 1,
+      },
+    ],
     pantry: [],
   },
   {
@@ -57,13 +84,31 @@ const seedUsers = [
     email: "test5@test.com",
     // Person wants to make lasagna, needs pasta tomato paste, crushed tomato, and basil leaves
     cart: [
-      "61661ee07aca7fab656fe6cb",
-      "61661ee07aca7fab656fe6cc",
-      "61661ee07aca7fab656fe6cd",
-      "61661ee07aca7fab656fe6ce",
+      {
+        itemId: "61661ee07aca7fab656fe6cb",
+        quantity: 1,
+      },
+      {
+        itemId: "61661ee07aca7fab656fe6cc",
+        quantity: 1,
+      },
+      {
+        itemId: "61661ee07aca7fab656fe6cd",
+        quantity: 1,
+      },
+      {
+        itemId: "61661ee07aca7fab656fe6ce",
+        quantity: 1,
+      },
     ],
     // Person has Mozzarella
-    pantry: ["61661ee07aca7fab656fe6ca"],
+    pantry: [
+      {
+        itemId: "61661ee07aca7fab656fe6ca",
+        quantity: 1,
+        inFreezer: true,
+      },
+    ],
   },
 ];
 
