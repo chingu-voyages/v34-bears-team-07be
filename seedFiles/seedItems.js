@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Item = require("./models/Items");
+const Item = require("./../models/Items");
 const dontenv = require("dotenv");
 require("dotenv").config();
 
