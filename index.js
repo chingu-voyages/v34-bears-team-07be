@@ -31,7 +31,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/items", itemsRouter);
 
 // if no endpoint matches
-app.use(function (err, req, res, next) {
+app.use(function (req, res, next) {
     return next(new NotFoundError());
 });
 

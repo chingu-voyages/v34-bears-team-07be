@@ -1,5 +1,33 @@
 const mongoose = require("mongoose");
+const { BadRequestError } = require("../expressError");
 const { Schema } = mongoose;
+
+const ItemSchema = new Schema({
+    perchaseDate: {
+        type: Date,
+        default: new Date(),
+    },
+    expireDate: {
+        type: Date,
+        default: function () {
+            let d = new Date();
+            d.setDate(d.getDate() + 14);
+            return d;
+        },
+    },
+    itemName: {
+        type: String,
+        required: true,
+    },
+    category: {
+        type: String,
+        default: "",
+    },
+    qty: {
+        type: Number,
+        default: 1,
+    },
+});
 
 const UserSchema = new Schema(
     {
@@ -25,16 +53,18 @@ const UserSchema = new Schema(
             required: [true, "Email is required."],
         },
         cart: { type: Array, default: [] },
-        pantry: { type: Array, default: [] },
+        // pantry: { type: Array, default: [] },
+        pantry: { type: [ItemSchema], default: [] },
     },
     { timeStamps: true }
 );
 
-UserSchema.path("email").validate(async (value) => {
-    const emailCount = await mongoose.models.User.countDocuments({
-        email: value,
-    });
-    return !emailCount;
-}, "This email address is already registered");
+UserSchema.post("save", function (error, res, next) {
+    if (error.name === "MongoServerError" && error.code === 11000) {
+        next(new BadRequestError("This email address is already registered."));
+    } else {
+        next();
+    }
+});
 
 module.exports = mongoose.model("User", UserSchema);

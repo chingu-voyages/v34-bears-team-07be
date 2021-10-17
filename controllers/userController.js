@@ -21,10 +21,7 @@ exports.findAll = async function (req, res) {
 exports.findOne = async function (req, res) {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id))
-            throw new BadRequestError("Invalid id.");
-        let user = await User.findById(id);
-        if (!user) throw new NotFoundError("User not found.");
+        const user = await getUser(id);
         return res.status(200).json({ user });
     } catch (e) {
         return res.status(e.status).json(e.message);
@@ -103,13 +100,50 @@ exports.update = async function (req, res) {
 exports.delete = async function (req, res) {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id))
-            throw new BadRequestError("Invalid id.");
-        let user = await User.findById(id);
-        if (!user) throw new NotFoundError("User not found.");
+        const user = await getUser(id);
         user.remove();
         return res.status(202).json({ message: "User deleted." });
     } catch (e) {
         return res.status(e.status).json({ error: e.message });
     }
 };
+
+exports.addItem = async function (req, res) {
+    try {
+        const { id } = req.params;
+        const user = await getUser(id);
+        user.pantry.push(req.body);
+        await user.save();
+        return res.status(202).json({ message: "Item added." });
+    } catch (e) {
+        return res.status(e.status).json({ error: e.message });
+    }
+};
+
+exports.updateItem = async function (req, res) {
+    try {
+        const { id, itemid } = req.params;
+        if (!mongoose.isValidObjectId(itemid))
+            throw new BadRequestError("Invalid item id.");
+        /**Todo: How to update nested document? */
+        const user = await getUser(id);
+        for (let item of user.pantry) {
+            if (item.id === itemid) {
+                item = { ...item, ...req.body };
+            }
+        }
+
+        user.save();
+        return res.status(200).json("hello");
+    } catch (e) {
+        return res.status(e.status).json({ error: e.message });
+    }
+};
+
+async function getUser(id) {
+    if (!mongoose.isValidObjectId(id))
+        throw new BadRequestError("Invalid user id.");
+    let user = await User.findById(id);
+    if (!user) throw new NotFoundError("User not found.");
+    return user;
+}

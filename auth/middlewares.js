@@ -8,7 +8,7 @@ function authenticateJWT(req, res, next) {
         const authHeader = req.headers && req.headers.authorization;
         if (authHeader) {
             const token = authHeader.replace(/^[Bb]earer /, "").trim();
-            res.locals.user = jwt.verify(token, SECRET_KEY);
+            res.locals.user = jwt.verify(token, process.env.SECRET_KEY);
         }
         return next();
     } catch (e) {
@@ -19,7 +19,7 @@ function authenticateJWT(req, res, next) {
 /* Middleware to use when user must be logged in. */
 function ensureLoggedIn(req, res, next) {
     try {
-        if (!res.locals.user) throw new UnauthorizedError();
+        if (!res.locals.user) throw new UnauthorizedError("Not logged in.");
         return next();
     } catch (e) {
         return next(e);
@@ -31,9 +31,9 @@ function ensureLoggedIn(req, res, next) {
 function ensureCorrectUser(req, res, next) {
     try {
         const user = res.locals.user;
-
+        console.log(user);
         if (!(user && user.id === req.params.id)) {
-            throw new UnauthorizedError();
+            throw new UnauthorizedError("Not correct user.");
         }
         return next();
     } catch (e) {
