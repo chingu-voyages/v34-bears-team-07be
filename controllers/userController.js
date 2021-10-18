@@ -122,19 +122,33 @@ exports.addItem = async function (req, res) {
 
 exports.updateItem = async function (req, res) {
     try {
-        const { id, itemid } = req.params;
-        if (!mongoose.isValidObjectId(itemid))
+        const { id, itemId } = req.params;
+        if (!mongoose.isValidObjectId(itemId))
             throw new BadRequestError("Invalid item id.");
-        /**Todo: How to update nested document? */
         const user = await getUser(id);
-        for (let item of user.pantry) {
-            if (item.id === itemid) {
-                item = { ...item, ...req.body };
+
+        for (let i = 0; i < user.pantry.length; i++) {
+            if (user.pantry[i].id == itemId) {
+                item = { ...user.pantry[i]._doc, ...req.body };
+                user.pantry.splice(i, 1, item);
             }
         }
-
         user.save();
-        return res.status(200).json("hello");
+        return res.status(200).json("Item updated.");
+    } catch (e) {
+        return res.status(e.status).json({ error: e.message });
+    }
+};
+
+exports.deleteItem = async function (req, res) {
+    try {
+        const { id, itemId } = req.params;
+        const user = await getUser(id);
+        if (!mongoose.isValidObjectId(itemId))
+            throw new BadRequestError("Invalid item id.");
+        user.pantry = user.pantry.filter((item) => item.id !== itemId);
+        user.save();
+        return res.status(202).json("Item deleted.");
     } catch (e) {
         return res.status(e.status).json({ error: e.message });
     }
