@@ -30,21 +30,38 @@ app.get("/", (req, res) => {
 app.use("/api/users", usersRouter);
 app.use("/api/items", itemsRouter);
 
-// if no endpoint matches
+// If no endpoint matches
 app.use(function (req, res, next) {
     return next(new NotFoundError());
 });
 
-// internal error output
+// Handle error output
 app.use(function (err, req, res, next) {
-    console.error(err.stack);
+    // handle validationError
+    if (err.name === "ValidationError") {
+        let errors = {};
+        Object.keys(err.errors).forEach((key) => {
+            errors[key] = err.errors[key].message;
+        });
+        return res.status(400).json({ error: errors });
+    }
+    // handle email duplication error
+    else if (err.name === "MongoServerError" && err.code === 11000) {
+        return res
+            .status(400)
+            .json({ error: "This email address has been registered." });
+    }
+    // handle normal error
+    else {
+        console.error(err.stack);
 
-    const status = err.status || 500;
-    const message = err.message;
+        const status = err.status || 500;
+        const message = err.message;
 
-    return res.status(status).json({
-        error: { message, status },
-    });
+        return res.status(status).json({
+            error: message,
+        });
+    }
 });
 
 const PORT = process.env.PORT || 3000;

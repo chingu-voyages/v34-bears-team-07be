@@ -8,27 +8,27 @@ const {
     BadRequestError,
 } = require("../expressError");
 
-exports.findAll = async function (req, res) {
+exports.findAll = async function (req, res, next) {
     try {
         const users = await User.find();
         if (!users) throw new NotFoundError("No users found.");
         return res.status(200).json({ users });
     } catch (e) {
-        return res.status(e.status).json(e.message);
+        return next(e);
     }
 };
 
-exports.findOne = async function (req, res) {
+exports.findOne = async function (req, res, next) {
     try {
         const { id } = req.params;
         const user = await getUser(id);
         return res.status(200).json({ user });
     } catch (e) {
-        return res.status(e.status).json(e.message);
+        return next(e);
     }
 };
 
-exports.register = async function (req, res) {
+exports.register = async function (req, res, next) {
     try {
         const { username, password, email } = req.body;
         // check if password is null
@@ -39,18 +39,11 @@ exports.register = async function (req, res) {
         const token = await createToken(user);
         return res.status(201).json({ token });
     } catch (e) {
-        if (e.name === "ValidationError") {
-            let errors = {};
-            Object.keys(e.errors).forEach((key) => {
-                errors[key] = e.errors[key].message;
-            });
-            return res.status(400).json({ error: errors });
-        }
-        return res.status(e.status).json({ error: e.message });
+        return next(e);
     }
 };
 
-exports.login = async function (req, res) {
+exports.login = async function (req, res, next) {
     try {
         const { email, password } = req.body;
         if (!email || !password)
@@ -65,11 +58,11 @@ exports.login = async function (req, res) {
             throw new UnauthorizedError("Invalid username/password");
         }
     } catch (e) {
-        return res.status(e.status).json({ error: e.message });
+        return next(e);
     }
 };
 
-exports.update = async function (req, res) {
+exports.update = async function (req, res, next) {
     try {
         const { id } = req.params;
         let updateInfo = { ...req.body };
@@ -86,29 +79,22 @@ exports.update = async function (req, res) {
         delete returnUser.password;
         return res.status(200).json({ user: returnUser });
     } catch (e) {
-        if (e.name === "ValidationError") {
-            let errors = {};
-            Object.keys(e.errors).forEach((key) => {
-                errors[key] = e.errors[key].message;
-            });
-            return res.status(400).json({ error: errors });
-        }
-        return res.status(e.status).json(e.message);
+        return next(e);
     }
 };
 
-exports.delete = async function (req, res) {
+exports.delete = async function (req, res, next) {
     try {
         const { id } = req.params;
         const user = await getUser(id);
         user.remove();
         return res.status(202).json({ message: "User deleted." });
     } catch (e) {
-        return res.status(e.status).json({ error: e.message });
+        return next(e);
     }
 };
 
-exports.addItem = async function (req, res) {
+exports.addItem = async function (req, res, next) {
     try {
         const { id } = req.params;
         const user = await getUser(id);
@@ -120,18 +106,11 @@ exports.addItem = async function (req, res) {
         await user.save();
         return res.status(202).json({ message: "Item added." });
     } catch (e) {
-        if (e.name === "ValidationError") {
-            let errors = {};
-            Object.keys(e.errors).forEach((key) => {
-                errors[key] = e.errors[key].message;
-            });
-            return res.status(400).json({ error: errors });
-        }
-        return res.status(e.status).json({ error: e.message });
+        return next(e);
     }
 };
 
-exports.updateItem = async function (req, res) {
+exports.updateItem = async function (req, res, next) {
     try {
         const { id, itemId } = req.params;
         if (!mongoose.isValidObjectId(itemId))
@@ -147,11 +126,11 @@ exports.updateItem = async function (req, res) {
         user.save();
         return res.status(200).json("Item updated.");
     } catch (e) {
-        return res.status(e.status).json({ error: e.message });
+        return next(e);
     }
 };
 
-exports.deleteItem = async function (req, res) {
+exports.deleteItem = async function (req, res, next) {
     try {
         const { id, itemId } = req.params;
         const user = await getUser(id);
@@ -161,7 +140,7 @@ exports.deleteItem = async function (req, res) {
         user.save();
         return res.status(202).json("Item deleted.");
     } catch (e) {
-        return res.status(e.status).json({ error: e.message });
+        return next(e);
     }
 };
 

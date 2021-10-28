@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { BadRequestError } = require("../expressError");
 const { Schema } = mongoose;
 
 const ItemSchema = new Schema({
@@ -58,13 +57,5 @@ const UserSchema = new Schema(
     },
     { timeStamps: true }
 );
-
-UserSchema.post("save", function (error, res, next) {
-    if (error.name === "MongoServerError" && error.code === 11000) {
-        next(new BadRequestError("This email address is already registered."));
-    } else {
-        next();
-    }
-});
 
 module.exports = mongoose.model("User", UserSchema);

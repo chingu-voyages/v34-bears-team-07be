@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { UnauthorizedError } = require("../expressError");
 
-/* Authenticate a user by verifing a token if provided. If a token is valid, the username would be saved to res.locals. 
+/* Authenticate a user by verifing a token if provided. If a token is valid, the userId would be saved to res.locals. 
 No error if no token is provided or user provided a non-valid token. */
 function authenticateJWT(req, res, next) {
     try {
