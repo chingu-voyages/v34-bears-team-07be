@@ -52,7 +52,7 @@ const ensureCorrectUser = (req, res, next) => {
   }
   try {
     const payload = jwt.verify(bearerToken, process.env.SECRET_KEY);
-    User.findById(payload.sub).then((user) => {
+    Users.findById(payload.id).then((user) => {
       if (!user) return res.status(401).json({ error: "Unauthorized request" });
       req.user = user;
       next();
