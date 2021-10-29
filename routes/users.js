@@ -4,7 +4,8 @@ const controller = require("../controllers/userController");
 const { ensureLoggedIn, ensureCorrectUser } = require("../auth/middlewares");
 
 router.get("/", ensureLoggedIn, controller.findAll);
-router.get("/:id", ensureCorrectUser, controller.findOne);
+// router.get("/:id", ensureCorrectUser, controller.findOne);
+router.get("/:id", controller.findOne);
 
 router.post("/register", controller.register);
 router.post("/login", controller.login);
