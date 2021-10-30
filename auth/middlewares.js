@@ -31,8 +31,8 @@ function ensureLoggedIn(req, res, next) {
 function ensureCorrectUser(req, res, next) {
     try {
         const user = res.locals.user;
-        console.log(user);
-        if (!(user && user.id === req.params.id)) {
+        if (!user) throw new UnauthorizedError("Not logged in.");
+        if (user.id !== req.params.id) {
             throw new UnauthorizedError("Not correct user.");
         }
         return next();
@@ -40,5 +40,25 @@ function ensureCorrectUser(req, res, next) {
         return next(e);
     }
 }
+
+// const ensureCorrectUser = (req, res, next) => {
+//     const authToken = req.get("Authorization") || "";
+//     let bearerToken;
+//     if (!authToken.toLowerCase().startsWith("bearer ")) {
+//       return res.status(401).json({ error: "Missing bearer token" });
+//     } else {
+//       bearerToken = authToken.slice(7, authToken.length);
+//     }
+//     try {
+//       const payload = jwt.verify(bearerToken, process.env.SECRET_KEY);
+//       Users.findById(payload.id).then((user) => {
+//         if (!user) return res.status(401).json({ error: "Unauthorized request" });
+//         req.user = user;
+//         next();
+//       });
+//     } catch (error) {
+//       res.status(401).json({ error: "Unauthorized request" });
+//     }
+//   };
 
 module.exports = { authenticateJWT, ensureLoggedIn, ensureCorrectUser };
