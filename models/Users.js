@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const ItemSchema = new Schema({
-    perchaseDate: {
+    purchaseDate: {
         type: Date,
         default: new Date(),
     },
