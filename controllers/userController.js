@@ -144,6 +144,56 @@ exports.deleteItem = async function (req, res, next) {
     }
 };
 
+exports.addItemToCart = async function (req, res, next) {
+    try {
+        const { id } = req.params;
+        const user = await getUser(id);
+        if (req.body.length) {
+            user.cart.push(...req.body);
+        } else {
+            user.cart.push(req.body);
+        }
+        await user.save();
+        return res.status(202).json({ message: "Item added." });
+    } catch (e) {
+        return next(e);
+    }
+};
+
+exports.updateCartItem = async function (req, res, next) {
+    try {
+        const { id, itemId } = req.params;
+        if (!mongoose.isValidObjectId(itemId))
+            throw new BadRequestError("Invalid item id.");
+        const user = await getUser(id);
+
+        for (let i = 0; i < user.cart.length; i++) {
+            if (user.cart[i].id == itemId) {
+                item = { ...user.cart[i]._doc, ...req.body };
+                user.cart.splice(i, 1, item);
+            }
+        }
+        user.save();
+        return res.status(200).json("Item updated.");
+    } catch (e) {
+        return next(e);
+    }
+};
+
+exports.deleteCartItem = async function (req, res, next) {
+    try {
+        const { id, itemId } = req.params;
+        const user = await getUser(id);
+        if (!mongoose.isValidObjectId(itemId))
+            throw new BadRequestError("Invalid item id.");
+        user.cart = user.cart.filter((item) => item.id !== itemId);
+        user.save();
+        return res.status(202).json("Item deleted.");
+    } catch (e) {
+        return next(e);
+    }
+};
+
 async function getUser(id) {
     if (!mongoose.isValidObjectId(id))
         throw new BadRequestError("Invalid user id.");

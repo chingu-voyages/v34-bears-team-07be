@@ -15,4 +15,8 @@ router.post("/:id", controller.addItem);
 router.patch("/:id/:itemId", controller.updateItem);
 router.delete("/:id/:itemId", controller.deleteItem);
 
+router.post("/cart/:id", controller.addItemToCart);
+router.patch("/cart/:id/:itemId", controller.updateCartItem);
+router.delete("/cart/:id/:itemId", controller.deleteCartItem);
+
 module.exports = router;
