@@ -17,7 +17,7 @@ router.get("/search/:itemName", async (req, res) => {
     // Try to find the items that match the key words
     try {
         const items = await Item.find({
-            name: { $regex: `.*${req.params.itemName}.*` },
+            name: { $regex: `.*${req.params.itemName.toLowerCase()}.*` },
         });
         res.status(200).json(items);
     } catch (err) {
