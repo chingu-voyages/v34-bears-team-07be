@@ -41,6 +41,10 @@ const CartItemSchema = new Schema({
         type: Number,
         default: 1,
     },
+    expirationDays: {
+        type: Number,
+        default: 0,
+    },
 });
 
 const UserSchema = new Schema(
