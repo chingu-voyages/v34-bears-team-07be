@@ -28,6 +28,21 @@ const ItemSchema = new Schema({
     },
 });
 
+const CartItemSchema = new Schema({
+    itemName: {
+        type: String,
+        required: true,
+    },
+    category: {
+        type: String,
+        default: "",
+    },
+    qty: {
+        type: Number,
+        default: 1,
+    },
+});
+
 const UserSchema = new Schema(
     {
         username: {
@@ -51,7 +66,7 @@ const UserSchema = new Schema(
             },
             required: [true, "Email is required."],
         },
-        cart: { type: Array, default: [] },
+        cart: { type: [CartItemSchema], default: [] },
         // pantry: { type: Array, default: [] },
         pantry: { type: [ItemSchema], default: [] },
     },
